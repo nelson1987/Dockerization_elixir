@@ -8,7 +8,7 @@ defmodule WratchilWeb.Router do
   scope "/api", WratchilWeb do
     pipe_through :api
 
-    resources "/v1/teacher", TeacherController, only: [:create] #, :show, :delete, :update]
+    resources "/v1/teacher", TeacherController, only: [:create, :show, :delete, :update]
   end
 
   scope "/api/swagger" do
