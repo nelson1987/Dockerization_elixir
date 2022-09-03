@@ -5,6 +5,7 @@ To start your Phoenix server:
   * Install dependencies with `docker-compose run --rm phoenix mix deps.get`
   * Start compilation with `docker-compose run --rm phoenix mix deps.compile`
   * Create and migrate your database with `docker-compose run --rm phoenix mix ecto.setup`
+  * Create new OpenApi doc with Swagger `docker-compose run --rm phoenix mix phx.swagger.generate`
   * Start Phoenix endpoint with `docker-compose up`
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.

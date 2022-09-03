@@ -23,6 +23,14 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
+# Use Swagger for API documentation in Phoenix
+  config :wratchil, :phoenix_swagger,
+  swagger_files: %{
+    "priv/static/swagger.json" => [
+      router: WratchilWeb.Router,
+      endpoint: WratchilWeb.Endpoint
+    ]
+  }
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
