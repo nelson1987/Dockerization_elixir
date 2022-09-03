@@ -7,9 +7,13 @@ defmodule WratchilWeb.Router do
 
   scope "/api", WratchilWeb do
     pipe_through :api
-
-    resources "/v1/teacher", TeacherController, only: [:create, :show, :delete, :update]
+    resources "/v1/teacher", TeacherController
+    # post "/v1/teacher", TeacherController, :create
+    # get "/v1/teacher", TeacherController, :show
+    # delete "/v1/teacher", TeacherController, :delete
+    # head "/v1/teacher", TeacherController, :update
   end
+
 
   scope "/api/swagger" do
     forward "/", PhoenixSwagger.Plug.SwaggerUI, otp_app: :wratchil, swagger_file: "swagger.json"

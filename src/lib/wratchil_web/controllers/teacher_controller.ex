@@ -1,68 +1,84 @@
 defmodule WratchilWeb.TeacherController do
   use WratchilWeb, :controller
-  action_fallback WratchilWeb.FallbackController
+
   use PhoenixSwagger
-  alias WratchilWeb.SwaggerDefinitions
 
-  SwaggerDefinitions.swagger_definitions()
+  swagger_path :index do
+    get("/posts")
+    description("List blog posts")
 
-  swagger_path(:create) do
-    post("/api/v1/teacher")
-    description("List all users in the database")
-    response(200, "OK", Schema.ref(:UsersResponse))
-    parameter(:user, :body, Schema.ref(:UserRequest), "user Request")
+    parameters do
+      tracker(:body, Schema.ref(:UserRequest), "Activity to record", required: true)
+    end
+
+    response(404, "Not found", Schema.ref(:NotFoundError))
+
+    response(200, "Success", Schema.ref(:UsersResponse),
+      example: %{
+        data: [
+          %{
+            id: 1,
+            count: 42,
+            email: "some email",
+            name: "some name",
+            private: true,
+            profile: "some profile"
+          }
+        ]
+      }
+    )
   end
 
-  def create(conn, params) do
-    params
-    |> Spi.create_teacher()
-    |> handle_response(conn, "create.json", :created)
+  def index(conn, _params) do
+    posts = Repo.all(Post)
+    render(conn, "index.json", posts: posts)
   end
 
-  def delete(conn, %{"id" => id}) do
-    id
-    |> Spi.delete_teacher()
-    |> handle_delete(conn)
+  def swagger_definitions do
+    %{
+      User:
+        swagger_schema do
+          title("Pessoa")
+          description("A user of the app")
+
+          properties do
+            id(:integer, "User ID")
+            name(:string, "User name", required: true)
+            email(:string, "Email address", format: :email, required: true)
+            inserted_at(:string, "Creation timestamp", format: :datetime)
+            updated_at(:string, "Update timestamp", format: :datetime)
+          end
+
+          example(%{
+            id: 123,
+            name: "Joe",
+            email: "joe@gmail.com"
+          })
+        end,
+      UserRequest:
+        swagger_schema do
+          title("UserRequest")
+          description("POST body for creating a user")
+          property(:user, Schema.ref(:User), "The user details")
+        end,
+      UserResponse:
+        swagger_schema do
+          title("UserResponse")
+          description("Response schema for single user")
+          property(:data, Schema.ref(:User), "The user details")
+        end,
+      UsersResponse:
+        swagger_schema do
+          title("UsersReponse")
+          description("Response schema for multiple users")
+          property(:data, Schema.array(:User), "The users details")
+        end,
+      NotFoundError:
+        swagger_schema do
+          title("NotFound")
+          description("Response schema for Not Found users")
+          #property(:data, "Não encontrado", "The users details")
+        end
+    }
   end
-
-  def show(conn, %{"id" => id}) do
-    id
-    |> Spi.show_teacher()
-    |> handle_response(conn, "show.json", :ok)
-  end
-
-  def update(conn, params) do
-    params
-    |> Spi.update_teacher()
-    |> handle_response(conn, "update.json", :ok)
-  end
-
-  defp handle_response({:ok, teacher}, conn, view, status) do
-    conn
-    |> put_status(status)
-    |> render(view, teacher: teacher)
-  end
-
-  defp handle_response({:error, _changeset} = error, _conn, _view, _status), do: error
-
-  defp handle_delete({:ok, _teacher}, conn) do
-    conn
-    |> put_status(:no_content)
-    |> text("")
-  end
-
-  defp handle_delete({:error, _reason} = error, _conn), do: error
-
-  # defp handle_show({:error, _teacher}, conn) do
-  #   conn
-  #   |> put_status(:not_found)
-  #   |> text("")
-  # end
-  # defp handle_show({:error, _reason} = error, _conn), do: error
-
-  # GET     /api/v1/teacher           :index
-  # GET     /api/v1/teacher/:id       :show
-  # POST    /api/v1/teacher           :create
-  # PATCH   /api/v1/teacher/:id       :update
-  # DELETE  /api/v1/teacher/:id       :delete
 end
