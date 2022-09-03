@@ -1,4 +1,4 @@
-# Wratchil
+# Projeto Elixir com Docker - Wratchil
 
 To start your Phoenix server:
 
