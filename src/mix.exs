@@ -5,9 +5,9 @@ defmodule Wratchil.MixProject do
     [
       app: :wratchil,
       version: "0.1.0",
-      elixir: "~> 1.7",
+      elixir: "~> 1.12",
       elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: [:phoenix, :gettext] ++ Mix.compilers(),
+      compilers: [:phoenix] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps()
@@ -45,7 +45,11 @@ defmodule Wratchil.MixProject do
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
       {:phoenix_swagger, "~> 0.8"},
-      {:ex_json_schema, "~> 0.5"}
+      {:ex_json_schema, "~> 0.5"},
+      {:pbkdf2_elixir, "~> 2.0"},
+      {:hackney, "~> 1.17"},
+      {:tesla, "~> 0.4"},
+      {:poison, "~> 3.1"}
     ]
   end
 
